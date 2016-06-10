@@ -1,16 +1,19 @@
 var _ = require('lodash');
+var assign = require('object-assign');
 var Emitter = require('events').EventEmitter;
 var AppDispatcher = require('./AppDispatcher');
 var constants = require('./constants');
-var assign = require('object-assign');
+var ApiClient = require('./ApiClient');
 
 var CHANGE = 'change';
 
 var TodoStore = assign({}, Emitter.prototype, {
   todos: [],
-  load: function(todos) {
-    this.todos = todos;
-    this.emit(CHANGE);
+  load: function() {
+    ApiClient.all(function(res) {
+      this.todos = res;
+      this.emit(CHANGE);
+    }.bind(this));
   },
   add: function(todo) {
     this.todos = _.concat(this.todos, todo);
@@ -61,5 +64,5 @@ AppDispatcher.register(function(payload) {
   return true;
 });
 
-
+TodoStore.load();
 module.exports = TodoStore;

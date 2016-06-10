@@ -1,38 +1,59 @@
-var $ = require('jquery');
+var superagent = require('superagent');
 
 module.exports = {
-  all: function() {
-    return $.ajax({
-      url: 'http://localhost:3000/api/v1/todos',
-      dataType: 'json',
-      method: 'GET',
-      contentType: 'application/json',
-    });
+  all: function(callback) {
+    return superagent
+      .get('http://localhost:3000/api/v1/todos')
+      .type('json')
+      .accept('json')
+      .end(function(err, res) {
+        if (err) {
+          console.error(err);
+        } else {
+          callback(res.body);
+        }
+      });
   },
-  add: function(todo) {
-    return $.ajax({
-      url: 'http://localhost:3000/api/v1/todos',
-      method: 'POST',
-      dataType: 'json',
-      data: JSON.stringify({name: todo.name, completed: todo.completed}),
-      contentType: 'application/json',
-    });
+  add: function(todo, callback) {
+    return superagent
+      .post('http://localhost:3000/api/v1/todos')
+      .type('json')
+      .accept('json')
+      .send({name: todo.name, completed: todo.completed})
+      .end(function(err, res) {
+        if (err) {
+          console.error(err);
+        } else {
+          callback(res.body);
+        }
+      });
   },
-  complete: function(id) {
-    return $.ajax({
-      url: 'http://localhost:3000/api/v1/todos/' + id,
-      method: 'PUT',
-      dataType: 'json',
-      data: JSON.stringify({completed: true}),
-      contentType: 'application/json',
-    });
+  complete: function(id, callback) {
+    return superagent
+      .put('http://localhost:3000/api/v1/todos/' + id)
+      .type('json')
+      .accept('json')
+      .send({completed: true})
+      .end(function(err, res) {
+        if (err) {
+          console.error(err);
+        } else {
+          callback(res.body);
+        }
+      });
   },
-  remove: function(id) {
-    return $.ajax({
-      url: 'http://localhost:3000/api/v1/todos/' + id,
-      method: 'DELETE',
-      dataType: 'json',
-      contentType: 'application/json',
-    });
+  remove: function(id, callback) {
+    return superagent
+      .delete('http://localhost:3000/api/v1/todos/' + id)
+      .type('json')
+      .accept('json')
+      .send({completed: true})
+      .end(function(err, res) {
+        if (err) {
+          console.error(err);
+        } else {
+          callback(res.body);
+        }
+      });
   }
 };
